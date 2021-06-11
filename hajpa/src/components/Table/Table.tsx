@@ -30,17 +30,6 @@ export const Table: <T>(
 ) => React.ReactElement<TableProps<T>> = ({ ...props }) => {
   const { data, tableActions, onSort, onSearch, onFilterByKey } = props;
 
-  //   const isDataAllEqual = () => {
-  //     return data.every((d) => data[0] === d);
-  //   };
-
-  //   const handleErrors = () => {
-  //     if (!isDataAllEqual()) {
-  //       setError(true);
-  //       throw new Error("Data objects are different!");
-  //     }
-  //   };
-
   const sortBy = (key: string, type: SortByType) => {
     return type ? (
       type === "string" ? (
@@ -75,11 +64,11 @@ export const Table: <T>(
       </>
     ) : null;
 
-  const tableBody = Object.values(data).map((v) => {
+  const tableBody = Object.values(data).map((v, i) => {
     return (
-      <tr>
-        {Object.values(v).map((kv) => (
-          <td>{String(kv)}</td>
+      <tr key={i}>
+        {Object.values(v).map((kv, i) => (
+          <td key={i}>{String(kv)}</td>
         ))}
         {tableActions.length > 0 && (
           <td>
