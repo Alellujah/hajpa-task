@@ -52,7 +52,6 @@ WithData.args = {
     },
   ],
   onSort: (key) => console.log("sort by", key),
-  onFilterByKey: (key) => console.log("filter by", key),
   onSearch: (key) => console.log("search by", key),
 };
 

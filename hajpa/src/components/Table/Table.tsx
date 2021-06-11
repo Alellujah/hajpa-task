@@ -17,7 +17,6 @@ export interface TableProps<T> {
   tableActions: TableAction<T>[];
   onSort: (key: string) => void;
   onSearch: (key: string) => void;
-  onFilterByKey: (key: string) => void;
 }
 
 /**
@@ -28,7 +27,8 @@ type SortByType = "string" | "number" | null;
 export const Table: <T>(
   props: TableProps<T>
 ) => React.ReactElement<TableProps<T>> = ({ ...props }) => {
-  const { data, tableActions, onSort, onSearch, onFilterByKey } = props;
+  const { data, tableActions, onSort, onSearch } = props;
+  const [ActiveFilters, setActiveFilters] = useState<string[]>([]);
 
   const sortBy = (key: string, type: SortByType) => {
     return type ? (
@@ -55,26 +55,35 @@ export const Table: <T>(
   const tableHeaders =
     data.length > 0 ? (
       <>
-        {objectKeys.map((k, i) => (
-          <th>
-            {String(k)} {sortBy(k, typeOfAttribute(i))}
-          </th>
-        ))}
-        {tableActions.length > 0 && <th>Actions</th>}
+        {objectKeys.map(
+          (k, i) =>
+            !ActiveFilters.includes(k) && (
+              <th key={i}>
+                {String(k)} {sortBy(k, typeOfAttribute(i))}
+              </th>
+            )
+        )}
+        {tableActions.length > 0 && <th key={"actions"}>Actions</th>}
       </>
     ) : null;
 
   const tableBody = Object.values(data).map((v, i) => {
     return (
       <tr key={i}>
-        {Object.values(v).map((kv, i) => (
-          <td key={i}>{String(kv)}</td>
-        ))}
+        {Object.values(v).map((kv, i) => {
+          return (
+            !ActiveFilters.includes(Object.keys(v)[i]) && (
+              <td key={i}>{String(kv)}</td>
+            )
+          );
+        })}
         {tableActions.length > 0 && (
-          <td>
-            {tableActions.map((action) => {
+          <td key={i + 1}>
+            {tableActions.map((action, index) => {
               return (
-                <button onClick={(e) => action.fn(e, v)}>{action.name}</button>
+                <button key={i + 2} onClick={(e) => action.fn(e, v)}>
+                  {action.name}
+                </button>
               );
             })}
           </td>
@@ -83,16 +92,25 @@ export const Table: <T>(
     );
   });
 
-  //   const keyToApplyFilter = (
-  //     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  //   ) => {
-  //     return event.currentTarget.innerHTML.replace(/(<([^>]+)>)/gi, "");
-  //   };
-
   const filters =
     objectKeys &&
-    objectKeys.map((h) => (
-      <button onClick={() => onFilterByKey(h)}>{h}</button>
+    objectKeys.map((h, i) => (
+      <>
+        <input
+          type="checkbox"
+          name={h}
+          key={i}
+          onChange={() => {
+            setActiveFilters(
+              ActiveFilters.includes(h)
+                ? [...ActiveFilters.filter((a) => a !== h)]
+                : [...ActiveFilters, h]
+            );
+          }}
+        />
+
+        <label htmlFor={h}>{h}</label>
+      </>
     ));
 
   return (
@@ -102,7 +120,9 @@ export const Table: <T>(
         <>
           <div>Filters by {filters}</div>
           <table>
-            {tableHeaders}
+            <thead>
+              <tr>{tableHeaders}</tr>
+            </thead>
             <tbody>{tableBody}</tbody>
           </table>
         </>
