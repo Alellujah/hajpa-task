@@ -30,7 +30,7 @@ type SortByType = "string" | "number" | null;
 export const Table: <T>(
   props: TableProps<T>
 ) => React.ReactElement<TableProps<T>> = ({ ...props }) => {
-  const { data, tableActions, onSort, onSearch } = props;
+  const { data, tableActions, resultsPerPage, onSort, onSearch } = props;
   const [ActiveFilters, setActiveFilters] = useState<string[]>([]);
   const [OpenSearch, setOpenSearch] = useState<{
     open: boolean;
@@ -103,7 +103,7 @@ export const Table: <T>(
     ) : null;
 
   const tableBody = Object.values(data).map((v, i) => {
-    return (
+    return i >= resultsPerPage ? null : (
       <tr key={`row ${i}`}>
         {Object.values(v).map((kv, i) => {
           return (
@@ -172,6 +172,7 @@ export const Table: <T>(
               <tr>{tableHeaders}</tr>
             </thead>
             <tbody>{tableBody}</tbody>
+            <tfoot>Pagination - Showing {resultsPerPage}</tfoot>
           </table>
         </>
       ) : (
