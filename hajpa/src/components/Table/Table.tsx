@@ -42,6 +42,8 @@ export const Table: <T>(
   }>();
   const [SearchText, setSearchText] = useState<string>("");
   const [OriginalData] = useState(data);
+  const [PageNumber, setPageNumber] = useState(0);
+  const numberOfPages = Math.ceil(OriginalData.length / resultsPerPage);
 
   const filterData = (data: any, key: string, searchString: string) => {
     const filteredData: any[] = [];
@@ -151,7 +153,22 @@ export const Table: <T>(
         <label htmlFor={h}>{h}</label>
       </>
     ));
-
+  const pagination = () => {
+    const elements = [];
+    for (let index = 0; index < numberOfPages; index++) {
+      elements.push(
+        <button
+          onClick={() => {
+            setPageNumber(index + 1);
+            console.log("should display from: ");
+          }}
+        >
+          {index + 1}
+        </button>
+      );
+    }
+    return elements;
+  };
   return (
     <>
       {/* {hasError && <span>Error: {handleErrors()}</span>} */}
@@ -172,7 +189,12 @@ export const Table: <T>(
               <tr>{tableHeaders}</tr>
             </thead>
             <tbody>{tableBody}</tbody>
-            <tfoot>Pagination - Showing {resultsPerPage}</tfoot>
+            <tfoot>
+              Pagination - Showing {resultsPerPage} of {OriginalData.length}
+              <br />
+              actual page {PageNumber}
+              {pagination().map((b) => b)}
+            </tfoot>
           </table>
         </>
       ) : (
