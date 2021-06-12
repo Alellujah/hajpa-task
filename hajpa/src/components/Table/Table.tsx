@@ -43,7 +43,7 @@ export const Table: <T>(
   const [SearchText, setSearchText] = useState<string>("");
   const [OriginalData] = useState(data);
   const [PageNumber, setPageNumber] = useState(0);
-  const numberOfPages = Math.ceil(OriginalData.length / resultsPerPage);
+  const [ShowRecordsFrom, setShowRecordsFrom] = useState(0);
 
   const filterData = (data: any, key: string, searchString: string) => {
     const filteredData: any[] = [];
@@ -104,8 +104,10 @@ export const Table: <T>(
       </>
     ) : null;
 
-  const tableBody = Object.values(data).map((v, i) => {
-    return i >= resultsPerPage ? null : (
+  const tableBody = Object.values(
+    data.slice(ShowRecordsFrom, ShowRecordsFrom + resultsPerPage)
+  ).map((v, i) => {
+    return (
       <tr key={`row ${i}`}>
         {Object.values(v).map((kv, i) => {
           return (
@@ -155,12 +157,13 @@ export const Table: <T>(
     ));
   const pagination = () => {
     const elements = [];
+    const numberOfPages = Math.ceil(data.length / resultsPerPage);
     for (let index = 0; index < numberOfPages; index++) {
       elements.push(
         <button
           onClick={() => {
             setPageNumber(index + 1);
-            console.log("should display from: ");
+            setShowRecordsFrom(index * resultsPerPage);
           }}
         >
           {index + 1}
@@ -178,6 +181,8 @@ export const Table: <T>(
           onUpdateText={(string) => {
             setSearchText(string);
             onSearch(filterData(OriginalData, OpenSearch.key, string));
+            setPageNumber(1);
+            setShowRecordsFrom(0);
           }}
         />
       )}
