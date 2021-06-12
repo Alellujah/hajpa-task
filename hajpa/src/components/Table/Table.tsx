@@ -4,7 +4,7 @@ import { normalizeString } from "../../helper/helper";
 import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.css";
 
-interface TableAction<T> {
+export interface TableAction<T> {
   fn: (e: React.MouseEvent<any, MouseEvent>, r: T) => void;
   name: string;
   icon?: string;
@@ -16,7 +16,6 @@ export interface TableProps<T> {
    */
   data: Array<T>;
   resultsPerPage: number;
-  sortable?: boolean;
   tableActions: TableAction<T>[];
   onSort: (key: string) => void;
   onSearch: (filteredData: Array<T>) => void;
@@ -35,10 +34,6 @@ export const Table: <T>(
   const [OpenSearch, setOpenSearch] = useState<{
     open: boolean;
     key: string;
-    coordenates: {
-      x: number;
-      y: number;
-    };
   }>();
   const [SearchText, setSearchText] = useState<string>("");
   const [OriginalData] = useState(data);
@@ -62,10 +57,6 @@ export const Table: <T>(
             setOpenSearch({
               open: true,
               key: key,
-              coordenates: {
-                x: 0,
-                y: 0,
-              },
             });
           }}
         >
@@ -78,7 +69,7 @@ export const Table: <T>(
   };
 
   const typeOfAttribute = (index: number) => {
-    const attribute = Object.entries(Object.values(data)[0])[index][1];
+    const attribute = Object.entries(Object.values(OriginalData)[0])[index][1];
     return typeof attribute === "number"
       ? "number"
       : typeof attribute === "string"
@@ -87,16 +78,32 @@ export const Table: <T>(
   };
 
   const objectKeys =
-    data.length > 0 ? Object.keys(data[0]).map((k) => String(k)) : [];
+    OriginalData.length > 0
+      ? Object.keys(OriginalData[0]).map((k) => String(k))
+      : [];
 
   const tableHeaders =
-    data.length > 0 ? (
+    OriginalData.length > 0 ? (
       <>
         {objectKeys.map(
           (k, i) =>
             !ActiveFilters.includes(k) && (
               <th key={i}>
                 {String(k)} {sortBy(k, typeOfAttribute(i))}
+                {OpenSearch && OpenSearch.key === k && (
+                  <TableSearch
+                    key={k}
+                    text={SearchText}
+                    onUpdateText={(string) => {
+                      setSearchText(string);
+                      onSearch(
+                        filterData(OriginalData, OpenSearch.key, string)
+                      );
+                      setPageNumber(1);
+                      setShowRecordsFrom(0);
+                    }}
+                  />
+                )}
               </th>
             )
         )}
@@ -151,10 +158,10 @@ export const Table: <T>(
             );
           }}
         />
-
         <label htmlFor={h}>{h}</label>
       </>
     ));
+
   const pagination = () => {
     const elements = [];
     const numberOfPages = Math.ceil(data.length / resultsPerPage);
@@ -172,28 +179,19 @@ export const Table: <T>(
     }
     return elements;
   };
+
   return (
     <>
       {/* {hasError && <span>Error: {handleErrors()}</span>} */}
-      {OpenSearch && (
-        <TableSearch
-          text={SearchText}
-          onUpdateText={(string) => {
-            setSearchText(string);
-            onSearch(filterData(OriginalData, OpenSearch.key, string));
-            setPageNumber(1);
-            setShowRecordsFrom(0);
-          }}
-        />
-      )}
-      {data.length > 0 ? (
+
+      {OriginalData.length > 0 ? (
         <>
           <div>Filters by {filters}</div>
-          <table>
+          <table className="table">
             <thead>
               <tr>{tableHeaders}</tr>
             </thead>
-            <tbody>{tableBody}</tbody>
+            <tbody>{data.length > 0 ? tableBody : "Nothing found"}</tbody>
             <tfoot>
               Pagination - Showing {resultsPerPage} of {OriginalData.length}
               <br />

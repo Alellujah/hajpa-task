@@ -1,4 +1,3 @@
-import _ from "lodash";
 import React from "react";
 import "./TableSearch.css";
 
@@ -13,6 +12,7 @@ export const TableSearch: React.FC<TableSearchProps> = ({
 }) => {
   return (
     <input
+      className="table-search"
       type="text"
       value={text}
       onChange={

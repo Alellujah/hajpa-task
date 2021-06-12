@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "../components/Table/Table";
+import { Table, TableAction } from "../components/Table/Table";
 import { DummyData2 } from "./DummyData2";
 import _ from "lodash";
 import { TableSearch } from "../components/TableSearch/TableSearch";
@@ -49,6 +49,17 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
     setPersons(filteredData);
   };
 
+  const tableActions: TableAction<DummyData2I>[] = [
+    {
+      fn: (e, r) => console.log(`event ${e} row ${r.id} `),
+      name: "Edit",
+    },
+    {
+      fn: (e, r) => alert(`event ${e} row ${r.id} `),
+      name: "Alert",
+    },
+  ];
+
   return (
     <>
       <Table<DummyData2I>
@@ -56,7 +67,7 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
         onSort={onSort}
         data={Persons}
         resultsPerPage={15}
-        tableActions={[]}
+        tableActions={tableActions}
       />
     </>
   );

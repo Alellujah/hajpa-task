@@ -40,7 +40,6 @@ export const WithData = Template.bind({});
 WithData.args = {
   data: dummyResults.persons,
   resultsPerPage: dummyResults.totalResults,
-  sortable: true,
   tableActions: [
     {
       fn: (e, r) => console.log(`event ${e.currentTarget} row ${r.name} `),
@@ -59,6 +58,5 @@ export const NoData = Template.bind({});
 NoData.args = {
   data: [],
   resultsPerPage: 0,
-  sortable: true,
   tableActions: [],
 };
