@@ -1,6 +1,6 @@
 import _ from "lodash";
-import React, { useEffect, useRef, useState } from "react";
-import { normalizeString, usePrevious } from "../../helper/helper";
+import React, { useState } from "react";
+import { normalizeString } from "../../helper/helper";
 import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.css";
 
@@ -19,7 +19,7 @@ export interface TableProps<T> {
   sortable?: boolean;
   tableActions: TableAction<T>[];
   onSort: (key: string) => void;
-  onSearch: (resetData: boolean, filteredData: Array<T>) => void;
+  onSearch: (filteredData: Array<T>) => void;
 }
 
 /**
@@ -41,17 +41,14 @@ export const Table: <T>(
     };
   }>();
   const [SearchText, setSearchText] = useState<string>("");
-  const filteredData: any[] = [];
+  const [OriginalData] = useState(data);
 
   const filterData = (data: any, key: string, searchString: string) => {
     const filteredData: any[] = [];
     data.forEach((c: any) => {
-      console.log("c", c);
-      console.log("search", normalizeString(searchString));
       normalizeString(c[key]).includes(normalizeString(searchString)) &&
         filteredData.push(c);
     });
-    console.log("filter", filteredData);
     return filteredData;
   };
 
@@ -154,7 +151,6 @@ export const Table: <T>(
         <label htmlFor={h}>{h}</label>
       </>
     ));
-  const prevCount = usePrevious(data);
 
   return (
     <>
@@ -164,31 +160,7 @@ export const Table: <T>(
           text={SearchText}
           onUpdateText={(string) => {
             setSearchText(string);
-            const resetData = string.length < SearchText.length;
-            console.log("previous ", prevCount);
-            onSearch(resetData, filterData(data, OpenSearch.key, string));
-            // setPersons(
-            //   Object.values(DummyData).filter((p) =>
-            //     normalizeString(p.name).includes(normalizeString(string))
-            //   )
-            // );
-            // const castAny = DummyData as any[];
-            // const filteredPerson: Person[] = [];
-            // castAny.forEach((c) => {
-            //   normalizeString(c[OpenSearch.key]).includes(
-            //     normalizeString(string)
-            //   ) && filteredPerson.push(c[OpenSearch.key]);
-            // });
-            // console.log("filter", filteredPerson);
-            // const result = _.pickBy(
-            //   Object.values(DummyData),
-            //   function (value, key) {
-            //     console.log("key", key);
-            //     console.log("value", value);
-            //   }
-            // );
-            // console.log("lodash pick", result);
-            // setPersons(_.filter(Persons, [OpenSearch?.key, string]));
+            onSearch(filterData(OriginalData, OpenSearch.key, string));
           }}
         />
       )}

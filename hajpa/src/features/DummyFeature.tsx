@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "../components/Table/Table";
-import { DummyData } from "./DummyData";
+import { DummyData2 } from "./DummyData2";
 import _ from "lodash";
 import { TableSearch } from "../components/TableSearch/TableSearch";
 import { normalizeString } from "../helper/helper";
@@ -10,18 +10,24 @@ interface Person {
   age: number;
 }
 
+interface DummyData2I {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  gender: string;
+  ip_address: string;
+  age: number;
+}
+
 type Direction = "ASC" | "DESC";
 
 export const DummyFeature: React.FC<{}> = ({ ...props }) => {
-  const [Persons, setPersons] = useState<Person[]>(DummyData);
+  const [Persons, setPersons] = useState<DummyData2I[]>(DummyData2);
   const [SortByDirection, setSortByDirection] = useState<{
     key: string;
     direction: Direction;
   }>();
-
-  useEffect(() => {
-    console.log("person", Persons);
-  }, [Persons]);
 
   const onSort = (key: string) => {
     const sortBy: { key: string; direction: Direction } = {
@@ -39,16 +45,13 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
       : setPersons([..._.reverse(Persons)]);
   };
 
-  const onSearch = (resetData: boolean, filteredData: Person[]) => {
-    const previousState = Persons;
-    console.log("prev", filteredData);
-    console.log("new", filteredData);
-    // resetData ? setPersons(DummyData) : setPersons(filteredData);
+  const onSearch = (filteredData: DummyData2I[]) => {
+    setPersons(filteredData);
   };
 
   return (
     <>
-      <Table<Person>
+      <Table<DummyData2I>
         onSearch={onSearch}
         onSort={onSort}
         data={Persons}
