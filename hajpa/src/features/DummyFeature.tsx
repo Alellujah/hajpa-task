@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Table, TableAction } from "../components/Table/Table";
 import { DummyData2 } from "./DummyData2";
 import _ from "lodash";
-import { TableSearch } from "../components/TableSearch/TableSearch";
-import { normalizeString } from "../helper/helper";
+import { faExclamation, faTerminal } from "@fortawesome/free-solid-svg-icons";
 interface Person {
   id: number;
   name: string;
@@ -51,11 +50,13 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
 
   const tableActions: TableAction<DummyData2I>[] = [
     {
-      fn: (e, r) => console.log(`event ${e} row ${r.id} `),
-      name: "Edit",
+      icon: faTerminal,
+      fn: (e, r) => console.log(`event ${e} row id ${r.id} `),
+      name: "Console.log",
     },
     {
-      fn: (e, r) => alert(`event ${e} row ${r.id} `),
+      icon: faExclamation,
+      fn: (e, r) => alert(`event ${e} row id ${r.id} `),
       name: "Alert",
     },
   ];
@@ -66,7 +67,7 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
         onSearch={onSearch}
         onSort={onSort}
         data={Persons}
-        resultsPerPage={5}
+        resultsPerPage={15}
         tableActions={tableActions}
       />
     </>

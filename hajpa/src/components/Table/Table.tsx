@@ -7,11 +7,12 @@ import { TableSearch } from "../TableSearch/TableSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./Table.css";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export interface TableAction<T> {
   fn: (e: React.MouseEvent<any, MouseEvent>, r: T) => void;
   name: string;
-  icon?: string;
+  icon?: IconProp;
 }
 
 export interface TableProps<T> {
@@ -65,7 +66,7 @@ export const Table: <T>(
             });
           }}
         >
-          <FontAwesomeIcon icon={faSearch} />
+          <FontAwesomeIcon color={"#0683f9"} icon={faSearch} />
         </button>
       ) : type === "number" ? (
         <button
@@ -76,7 +77,7 @@ export const Table: <T>(
             setShowRecordsFrom(0);
           }}
         >
-          <FontAwesomeIcon icon={faSort} />
+          <FontAwesomeIcon color={"#0683f9"} icon={faSort} />
         </button>
       ) : null
     ) : null;
@@ -150,6 +151,13 @@ export const Table: <T>(
                   key={`action btn ${i}`}
                   onClick={(e) => action.fn(e, v)}
                 >
+                  {action.icon && (
+                    <FontAwesomeIcon
+                      style={{ marginRight: ".5rem" }}
+                      icon={action.icon}
+                      color={"#0683f9"}
+                    />
+                  )}
                   {action.name}
                 </button>
               );
@@ -182,13 +190,13 @@ export const Table: <T>(
             actualPage={PageNumber}
             showRecordsFrom={setShowRecordsFrom}
           />
-          <div>
-            Showing
+          <div className="total-results">
+            Showing{" "}
             {
               data.slice(ShowRecordsFrom, ShowRecordsFrom + resultsPerPage)
                 .length
             }{" "}
-            results Total results : {OriginalData.length}
+            out of {OriginalData.length}
           </div>
         </div>
       ) : (

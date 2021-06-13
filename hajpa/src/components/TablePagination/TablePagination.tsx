@@ -32,5 +32,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       </button>
     );
   }
-  return <span className={"pagination"}>{elements}</span>;
+  return numberOfPages === 1 ? null : (
+    <span className={"pagination"}>{elements}</span>
+  );
 };

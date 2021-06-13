@@ -1,10 +1,11 @@
 .table-filter {
-  margin: 1rem;
+  /* margin: 1rem; */
   border: 1px solid;
   border-radius: 0.5rem;
   border-color: #eee;
   padding: 0.5rem;
   width: 100%;
+  text-align: center;
 }
 .table-filter input {
   cursor: pointer;
