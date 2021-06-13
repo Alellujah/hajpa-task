@@ -1,6 +1,8 @@
 import _ from "lodash";
 import React, { useState } from "react";
 import { normalizeString } from "../../helper/helper";
+import { TableFilter } from "../TableFilter/TableFilter";
+import { TablePagination } from "../TablePagination/TablePagination";
 import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.css";
 
@@ -55,7 +57,7 @@ export const Table: <T>(
         <button
           onClick={(e) => {
             setOpenSearch({
-              open: true,
+              open: OpenSearch?.open ? !OpenSearch.open : true,
               key: key,
             });
           }}
@@ -89,21 +91,22 @@ export const Table: <T>(
           (k, i) =>
             !ActiveFilters.includes(k) && (
               <th key={i}>
-                {String(k)} {sortBy(k, typeOfAttribute(i))}
-                {OpenSearch && OpenSearch.key === k && (
-                  <TableSearch
-                    key={k}
-                    text={SearchText}
-                    onUpdateText={(string) => {
-                      setSearchText(string);
-                      onSearch(
-                        filterData(OriginalData, OpenSearch.key, string)
-                      );
-                      setPageNumber(1);
-                      setShowRecordsFrom(0);
-                    }}
-                  />
-                )}
+                {_.startCase(String(k))} {sortBy(k, typeOfAttribute(i))}
+                {OpenSearch &&
+                  OpenSearch.key === k && ( //not working need to check the rendering
+                    <TableSearch
+                      key={k}
+                      text={SearchText}
+                      onUpdateText={(string) => {
+                        setSearchText(string);
+                        onSearch(
+                          filterData(OriginalData, OpenSearch.key, string)
+                        );
+                        setPageNumber(1);
+                        setShowRecordsFrom(0);
+                      }}
+                    />
+                  )}
               </th>
             )
         )}
@@ -141,64 +144,44 @@ export const Table: <T>(
     );
   });
 
-  const filters =
-    objectKeys &&
-    objectKeys.map((h, i) => (
-      <>
-        <input
-          type="checkbox"
-          name={h}
-          key={i}
-          // fixed checked
-          onChange={() => {
-            setActiveFilters(
-              ActiveFilters.includes(h)
-                ? [...ActiveFilters.filter((a) => a !== h)]
-                : [...ActiveFilters, h]
-            );
-          }}
-        />
-        <label htmlFor={h}>{h}</label>
-      </>
-    ));
-
-  const pagination = () => {
-    const elements = [];
-    const numberOfPages = Math.ceil(data.length / resultsPerPage);
-    for (let index = 0; index < numberOfPages; index++) {
-      elements.push(
-        <button
-          onClick={() => {
-            setPageNumber(index + 1);
-            setShowRecordsFrom(index * resultsPerPage);
-          }}
-        >
-          {index + 1}
-        </button>
-      );
-    }
-    return elements;
-  };
-
   return (
     <>
-      {/* {hasError && <span>Error: {handleErrors()}</span>} */}
-
       {OriginalData.length > 0 ? (
         <>
-          <div>Filters by {filters}</div>
+          <div>
+            Filters by{" "}
+            <TableFilter
+              ObjectKeys={objectKeys}
+              ActiveFilters={ActiveFilters}
+              setNewFilters={setActiveFilters}
+            />
+          </div>
           <table className="table">
             <thead>
               <tr>{tableHeaders}</tr>
             </thead>
             <tbody>{data.length > 0 ? tableBody : "Nothing found"}</tbody>
             <tfoot>
-              Pagination - Showing {resultsPerPage} of {OriginalData.length}
-              <br />
-              actual page {PageNumber}
-              {pagination().map((b) => b)}
+              <tr>
+                <td colSpan={objectKeys.length - ActiveFilters.length}>
+                  <TablePagination
+                    dataSize={data.length}
+                    resultsPerPage={resultsPerPage}
+                    actualPage={setPageNumber}
+                    showRecordsFrom={setShowRecordsFrom}
+                  />
+                </td>
+              </tr>
             </tfoot>
           </table>
+          <div>
+            Showing
+            {
+              data.slice(ShowRecordsFrom, ShowRecordsFrom + resultsPerPage)
+                .length
+            }{" "}
+            results Total results : {OriginalData.length}
+          </div>
         </>
       ) : (
         <div>No data!</div>
