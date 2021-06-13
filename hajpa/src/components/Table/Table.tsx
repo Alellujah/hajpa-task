@@ -4,6 +4,8 @@ import { normalizeString } from "../../helper/helper";
 import { TableFilter } from "../TableFilter/TableFilter";
 import { TablePagination } from "../TablePagination/TablePagination";
 import { TableSearch } from "../TableSearch/TableSearch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./Table.css";
 
 export interface TableAction<T> {
@@ -55,6 +57,7 @@ export const Table: <T>(
     return type ? (
       type === "string" ? (
         <button
+          className="table-header-icon"
           onClick={(e) => {
             setOpenSearch({
               open: OpenSearch?.open ? !OpenSearch.open : true,
@@ -62,10 +65,19 @@ export const Table: <T>(
             });
           }}
         >
-          Search
+          <FontAwesomeIcon icon={faSearch} />
         </button>
       ) : type === "number" ? (
-        <button onClick={() => onSort(key)}>Sort</button>
+        <button
+          className="table-header-icon"
+          onClick={() => {
+            onSort(key);
+            setPageNumber(1); //maybe we should sort visible results...
+            setShowRecordsFrom(0);
+          }}
+        >
+          <FontAwesomeIcon icon={faSort} />
+        </button>
       ) : null
     ) : null;
   };
@@ -110,7 +122,11 @@ export const Table: <T>(
               </th>
             )
         )}
-        {tableActions.length > 0 && <th key={"actions"}>Actions</th>}
+        {tableActions.length > 0 && (
+          <th className={"actions"} key={"actions"}>
+            Actions
+          </th>
+        )}
       </>
     ) : null;
 
@@ -127,7 +143,7 @@ export const Table: <T>(
           );
         })}
         {tableActions.length > 0 && (
-          <td key={`actions ${i}`}>
+          <td className={"actions"} key={`actions ${i}`}>
             {tableActions.map((action, i) => {
               return (
                 <button
@@ -147,33 +163,25 @@ export const Table: <T>(
   return (
     <>
       {OriginalData.length > 0 ? (
-        <>
-          <div>
-            Filters by{" "}
-            <TableFilter
-              ObjectKeys={objectKeys}
-              ActiveFilters={ActiveFilters}
-              setNewFilters={setActiveFilters}
-            />
-          </div>
+        <div className="container">
+          <TableFilter
+            ObjectKeys={objectKeys}
+            ActiveFilters={ActiveFilters}
+            setNewFilters={setActiveFilters}
+          />
           <table className="table">
             <thead>
               <tr>{tableHeaders}</tr>
             </thead>
             <tbody>{data.length > 0 ? tableBody : "Nothing found"}</tbody>
-            <tfoot>
-              <tr>
-                <td colSpan={objectKeys.length - ActiveFilters.length}>
-                  <TablePagination
-                    dataSize={data.length}
-                    resultsPerPage={resultsPerPage}
-                    actualPage={setPageNumber}
-                    showRecordsFrom={setShowRecordsFrom}
-                  />
-                </td>
-              </tr>
-            </tfoot>
           </table>
+          <TablePagination
+            dataSize={data.length}
+            resultsPerPage={resultsPerPage}
+            newPage={setPageNumber}
+            actualPage={PageNumber}
+            showRecordsFrom={setShowRecordsFrom}
+          />
           <div>
             Showing
             {
@@ -182,7 +190,7 @@ export const Table: <T>(
             }{" "}
             results Total results : {OriginalData.length}
           </div>
-        </>
+        </div>
       ) : (
         <div>No data!</div>
       )}

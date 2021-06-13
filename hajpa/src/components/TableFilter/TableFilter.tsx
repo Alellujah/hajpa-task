@@ -31,5 +31,10 @@ export const TableFilter: React.FC<TableFilterProps> = ({
       <label htmlFor={h}>{_.startCase(h)}</label>
     </>
   ));
-  return <>{filters}</>;
+  return (
+    <div className="table-filter">
+      <h5>Select columns to hide</h5>
+      {filters}
+    </div>
+  );
 };

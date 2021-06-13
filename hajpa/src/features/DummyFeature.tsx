@@ -66,7 +66,7 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
         onSearch={onSearch}
         onSort={onSort}
         data={Persons}
-        resultsPerPage={15}
+        resultsPerPage={5}
         tableActions={tableActions}
       />
     </>

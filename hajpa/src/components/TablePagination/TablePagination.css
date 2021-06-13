@@ -1,6 +1,21 @@
-.table-search {
-  position: absolute;
-  width: 100%;
-  top: 3rem;
-  left: 0;
+.pagination button {
+  background: transparent;
+  border: 1px solid;
+  border-radius: 0.3rem;
+  margin: 0 0.4rem;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+}
+.pagination button:hover {
+  background: black;
+  color: white;
+  transition: all ease 0.2s;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination button.active {
+  border-color: aqua;
 }

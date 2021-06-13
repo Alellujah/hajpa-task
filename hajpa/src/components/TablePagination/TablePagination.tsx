@@ -4,7 +4,8 @@ import "./TablePagination.css";
 export interface TablePaginationProps {
   dataSize: number;
   resultsPerPage: number;
-  actualPage: (pageNumber: number) => void;
+  actualPage: number;
+  newPage: (pageNumber: number) => void;
   showRecordsFrom: (number: number) => void;
 }
 
@@ -12,6 +13,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   dataSize,
   resultsPerPage,
   actualPage,
+  newPage,
   showRecordsFrom,
 }) => {
   const numberOfPages = Math.ceil(dataSize / resultsPerPage);
@@ -19,9 +21,10 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   for (let index = 0; index < numberOfPages; index++) {
     elements.push(
       <button
+        className={actualPage === index + 1 ? "active" : undefined}
         key={`footer ${index}`}
         onClick={() => {
-          actualPage(index + 1);
+          newPage(index + 1);
           showRecordsFrom(index * resultsPerPage);
         }}
       >
@@ -29,5 +32,5 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       </button>
     );
   }
-  return <>{elements}</>;
+  return <span className={"pagination"}>{elements}</span>;
 };
