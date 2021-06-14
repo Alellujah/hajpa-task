@@ -5,7 +5,11 @@ import { TableFilter } from "../TableFilter/TableFilter";
 import { TablePagination } from "../TablePagination/TablePagination";
 import { TableSearch } from "../TableSearch/TableSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSort, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSort,
+  faSearch,
+  faCaretDown,
+} from "@fortawesome/free-solid-svg-icons";
 import "./Table.css";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -13,6 +17,9 @@ export interface TableAction<T> {
   fn: (e: React.MouseEvent<any, MouseEvent>, r: T) => void;
   name: string;
   icon?: IconProp;
+}
+export interface SortByEnum {
+  keys: string[];
 }
 
 type Mode = "dark" | "light";
@@ -25,6 +32,7 @@ export interface TableProps<T> {
   mode?: Mode;
   resultsPerPage: number;
   tableActions: TableAction<T>[];
+  sortByEnum?: SortByEnum;
   onSort: (key: string) => void;
   onSearch: (filteredData: Array<T>) => void;
 }
@@ -37,7 +45,15 @@ type SortByType = "string" | "number" | null;
 export const Table: <T>(
   props: TableProps<T>
 ) => React.ReactElement<TableProps<T>> = ({ ...props }) => {
-  const { data, tableActions, resultsPerPage, mode, onSort, onSearch } = props;
+  const {
+    data,
+    tableActions,
+    resultsPerPage,
+    mode,
+    sortByEnum,
+    onSort,
+    onSearch,
+  } = props;
   const [ActiveFilters, setActiveFilters] = useState<string[]>([]);
   const [OpenSearch, setOpenSearch] = useState<{
     open: boolean;
@@ -47,6 +63,23 @@ export const Table: <T>(
   const [OriginalData] = useState(data);
   const [PageNumber, setPageNumber] = useState(1);
   const [ShowRecordsFrom, setShowRecordsFrom] = useState(0);
+  const [useDisplayBlock, setDisplayBlock] = useState<boolean>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tableHeadRef = useRef<HTMLTableSectionElement>(null);
+
+  useEffect(() => {
+    function handleResize() {
+      tableHeadRef.current &&
+        containerRef.current &&
+        setDisplayBlock(
+          tableHeadRef.current.clientWidth > containerRef.current.clientWidth
+            ? true
+            : false
+        );
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const filterData = (data: any, key: string, searchString: string) => {
     const filteredData: any[] = [];
@@ -59,7 +92,7 @@ export const Table: <T>(
 
   const sortBy = (key: string, type: SortByType) => {
     return type ? (
-      type === "string" ? (
+      type === "string" && !sortByEnum?.keys.includes(key) ? (
         <button
           className="table-header-icon"
           onClick={(e) => {
@@ -81,6 +114,22 @@ export const Table: <T>(
           }}
         >
           <FontAwesomeIcon color={"#0683f9"} icon={faSort} />
+        </button>
+      ) : sortByEnum?.keys.includes(key) ? (
+        <button
+          className="table-header-icon"
+          onClick={() => {
+            sortByEnum.keys.map((k) => {
+              const uniqueValues = _.uniqBy(OriginalData, k);
+              console.log("uniq", _.uniqBy(OriginalData, k));
+              console.log(
+                "value",
+                uniqueValues.map((v: any) => v["gender"])
+              );
+            });
+          }}
+        >
+          <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
         </button>
       ) : null
     ) : null;
@@ -176,25 +225,6 @@ export const Table: <T>(
       </tr>
     );
   });
-
-  const [useDisplayBlock, setDisplayBlock] = useState<boolean>();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const tableHeadRef = useRef<HTMLTableSectionElement>(null);
-
-  useEffect(() => {
-    function handleResize() {
-      console.log("recal");
-      tableHeadRef.current &&
-        containerRef.current &&
-        setDisplayBlock(
-          tableHeadRef.current.clientWidth > containerRef.current.clientWidth
-            ? true
-            : false
-        );
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <>
