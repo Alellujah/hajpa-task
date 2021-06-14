@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./Table.css";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { TableDropdownList } from "../TableDropdownList/TableDropdownList";
 
 export interface TableAction<T> {
   fn: (e: React.MouseEvent<any, MouseEvent>, r: T) => void;
@@ -59,6 +60,10 @@ export const Table: <T>(
     open: boolean;
     key: string;
   }>();
+  const [OpenDropdown, setOpenDropdown] = useState<{
+    open: boolean;
+    key: string;
+  }>();
   const [SearchText, setSearchText] = useState<string>("");
   const [OriginalData] = useState(data);
   const [PageNumber, setPageNumber] = useState(1);
@@ -77,6 +82,7 @@ export const Table: <T>(
             : false
         );
     }
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -119,14 +125,7 @@ export const Table: <T>(
         <button
           className="table-header-icon"
           onClick={() => {
-            sortByEnum.keys.map((k) => {
-              const uniqueValues = _.uniqBy(OriginalData, k);
-              console.log("uniq", _.uniqBy(OriginalData, k));
-              console.log(
-                "value",
-                uniqueValues.map((v: any) => v["gender"])
-              );
-            });
+            setOpenDropdown({ open: true, key });
           }}
         >
           <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
@@ -175,6 +174,30 @@ export const Table: <T>(
                       );
                       setPageNumber(1);
                       setShowRecordsFrom(0);
+                    }}
+                  />
+                )}
+                {OpenDropdown && OpenDropdown.key === k && (
+                  <TableDropdownList
+                    key={k}
+                    list={_.uniqBy(OriginalData, k).map(
+                      (v: any) => v[OpenDropdown.key]
+                    )}
+                    onBlurOut={() => {
+                      setOpenDropdown({
+                        key: "",
+                        open: false,
+                      });
+                      setSearchText("");
+                    }}
+                    onPickValue={(string) => {
+                      console.log("value picked", string);
+                      // setSearchText(string);
+                      // onSearch(
+                      //   filterData(OriginalData, OpenSearch.key, string)
+                      // );
+                      // setPageNumber(1);
+                      // setShowRecordsFrom(0);
                     }}
                   />
                 )}

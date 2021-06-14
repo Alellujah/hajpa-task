@@ -2,26 +2,30 @@ import React from "react";
 import "./TableDropdownList.css";
 
 export interface TableDropdownListProps {
-  text: string;
-  onUpdateText: (text: string) => void;
+  list: string[];
+  onPickValue: (text: string) => void;
   onBlurOut: () => void;
 }
 
 export const TableDropdownList: React.FC<TableDropdownListProps> = ({
-  text,
-  onUpdateText,
+  list,
+  onPickValue,
   onBlurOut,
 }) => {
-  return (
+  console.log("list", list);
+  const options = list.map((s, i) => (
     <input
+      key={i}
       autoFocus={true}
       onBlur={() => onBlurOut()}
       className="table-search"
       type="text"
-      value={text}
+      value={s}
       onChange={
-        (e) => onUpdateText(e.target.value) //debounce
+        (e) => onPickValue(e.target.value) //debounce
       }
     />
-  );
+  ));
+
+  return <>{options}</>;
 };
