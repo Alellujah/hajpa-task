@@ -1,3 +1,13 @@
+#TODO
+[ ] Sticky thead
+[ ] On pagination show only 1st page, actual + 1 left and right and last
+[ ] Allow multiselect of rows and bulk actions
+[ ] Allow to search by pre-defined strings like enums for certain key
+[ ] Sort by visible results on page, not whole table
+
+#Extra
+[ ] Create mock API to simulate loading
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
