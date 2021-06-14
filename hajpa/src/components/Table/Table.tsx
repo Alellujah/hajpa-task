@@ -87,11 +87,18 @@ export const Table: <T>(
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filterData = (data: any, key: string, searchString: string) => {
+  const filterData = (
+    data: any,
+    key: string,
+    searchString: string,
+    select?: boolean
+  ) => {
     const filteredData: any[] = [];
     data.forEach((c: any) => {
-      normalizeString(c[key]).includes(normalizeString(searchString)) &&
+      !select &&
+        normalizeString(c[key]).includes(normalizeString(searchString)) &&
         filteredData.push(c);
+      select && c[key] === searchString && filteredData.push(c);
     });
     return filteredData;
   };
@@ -126,6 +133,7 @@ export const Table: <T>(
           className="table-header-icon"
           onClick={() => {
             setOpenDropdown({ open: true, key });
+            console.log("click open", OpenDropdown);
           }}
         >
           <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
@@ -184,20 +192,20 @@ export const Table: <T>(
                       (v: any) => v[OpenDropdown.key]
                     )}
                     onBlurOut={() => {
-                      setOpenDropdown({
-                        key: "",
-                        open: false,
-                      });
-                      setSearchText("");
+                      // setOpenDropdown({
+                      //   key: "",
+                      //   open: false,
+                      // });
+                      // setSearchText("");
                     }}
                     onPickValue={(string) => {
                       console.log("value picked", string);
-                      // setSearchText(string);
-                      // onSearch(
-                      //   filterData(OriginalData, OpenSearch.key, string)
-                      // );
-                      // setPageNumber(1);
-                      // setShowRecordsFrom(0);
+                      setSearchText(string);
+                      onSearch(
+                        filterData(OriginalData, OpenDropdown.key, string, true)
+                      );
+                      setPageNumber(1);
+                      setShowRecordsFrom(0);
                     }}
                   />
                 )}

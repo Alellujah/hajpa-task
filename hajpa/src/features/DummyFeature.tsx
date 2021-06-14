@@ -157,6 +157,7 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
           resultsPerPage={15}
           tableActions={[]}
           mode={"light"}
+          sortByEnum={{ keys: ["color"] }}
         />
       </div>
     </div>

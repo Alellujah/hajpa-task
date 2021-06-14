@@ -14,18 +14,30 @@ export const TableDropdownList: React.FC<TableDropdownListProps> = ({
 }) => {
   console.log("list", list);
   const options = list.map((s, i) => (
-    <input
-      key={i}
-      autoFocus={true}
-      onBlur={() => onBlurOut()}
-      className="table-search"
-      type="text"
-      value={s}
-      onChange={
-        (e) => onPickValue(e.target.value) //debounce
-      }
-    />
+    <option key={i} value={s}>
+      {s}
+    </option>
   ));
 
-  return <>{options}</>;
+  return (
+    <>
+      <select
+        name="cars"
+        id="cars"
+        key={"select"}
+        autoFocus={true}
+        placeholder="Select"
+        onBlur={() => onBlurOut()}
+        className="table-search"
+        onChange={
+          (e) => onPickValue(e.target.value) //debounce
+        }
+      >
+        <option disabled selected defaultValue={""}>
+          Select
+        </option>
+        {options}
+      </select>
+    </>
+  );
 };

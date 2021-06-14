@@ -19,6 +19,7 @@ export const TableSearch: React.FC<TableSearchProps> = ({
       className="table-search"
       type="text"
       value={text}
+      placeholder="Search..."
       onChange={
         (e) => onUpdateText(e.target.value) //debounce
       }
