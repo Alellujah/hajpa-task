@@ -1,4 +1,4 @@
-export const DummyData = [
+export const DummyDataPerson = [
   {
     id: 1,
     age: 9,

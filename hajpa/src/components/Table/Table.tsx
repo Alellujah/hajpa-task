@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { normalizeString } from "../../helper/helper";
 import { TableFilter } from "../TableFilter/TableFilter";
 import { TablePagination } from "../TablePagination/TablePagination";
@@ -15,11 +15,14 @@ export interface TableAction<T> {
   icon?: IconProp;
 }
 
+type Mode = "dark" | "light";
+
 export interface TableProps<T> {
   /**
    * Data array passed to the table
    */
   data: Array<T>;
+  mode?: Mode;
   resultsPerPage: number;
   tableActions: TableAction<T>[];
   onSort: (key: string) => void;
@@ -34,7 +37,7 @@ type SortByType = "string" | "number" | null;
 export const Table: <T>(
   props: TableProps<T>
 ) => React.ReactElement<TableProps<T>> = ({ ...props }) => {
-  const { data, tableActions, resultsPerPage, onSort, onSearch } = props;
+  const { data, tableActions, resultsPerPage, mode, onSort, onSearch } = props;
   const [ActiveFilters, setActiveFilters] = useState<string[]>([]);
   const [OpenSearch, setOpenSearch] = useState<{
     open: boolean;
@@ -42,7 +45,7 @@ export const Table: <T>(
   }>();
   const [SearchText, setSearchText] = useState<string>("");
   const [OriginalData] = useState(data);
-  const [PageNumber, setPageNumber] = useState(0);
+  const [PageNumber, setPageNumber] = useState(1);
   const [ShowRecordsFrom, setShowRecordsFrom] = useState(0);
 
   const filterData = (data: any, key: string, searchString: string) => {
@@ -73,7 +76,7 @@ export const Table: <T>(
           className="table-header-icon"
           onClick={() => {
             onSort(key);
-            setPageNumber(1); //maybe we should sort visible results...
+            setPageNumber(1); //maybe we should sort only visible results...
             setShowRecordsFrom(0);
           }}
         >
@@ -105,21 +108,27 @@ export const Table: <T>(
             !ActiveFilters.includes(k) && (
               <th key={i}>
                 {_.startCase(String(k))} {sortBy(k, typeOfAttribute(i))}
-                {OpenSearch &&
-                  OpenSearch.key === k && ( //not working need to check the rendering
-                    <TableSearch
-                      key={k}
-                      text={SearchText}
-                      onUpdateText={(string) => {
-                        setSearchText(string);
-                        onSearch(
-                          filterData(OriginalData, OpenSearch.key, string)
-                        );
-                        setPageNumber(1);
-                        setShowRecordsFrom(0);
-                      }}
-                    />
-                  )}
+                {OpenSearch && OpenSearch.key === k && (
+                  <TableSearch
+                    key={k}
+                    text={SearchText}
+                    onBlurOut={() => {
+                      setOpenSearch({
+                        key: "",
+                        open: false,
+                      });
+                      setSearchText("");
+                    }}
+                    onUpdateText={(string) => {
+                      setSearchText(string);
+                      onSearch(
+                        filterData(OriginalData, OpenSearch.key, string)
+                      );
+                      setPageNumber(1);
+                      setShowRecordsFrom(0);
+                    }}
+                  />
+                )}
               </th>
             )
         )}
@@ -168,20 +177,63 @@ export const Table: <T>(
     );
   });
 
+  const [useDisplayBlock, setDisplayBlock] = useState<boolean>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tableHeadRef = useRef<HTMLTableSectionElement>(null);
+
+  useEffect(() => {
+    function handleResize() {
+      console.log("recal");
+      tableHeadRef.current &&
+        containerRef.current &&
+        setDisplayBlock(
+          tableHeadRef.current.clientWidth > containerRef.current.clientWidth
+            ? true
+            : false
+        );
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       {OriginalData.length > 0 ? (
-        <div className="container">
+        <div className="container" ref={containerRef}>
           <TableFilter
             ObjectKeys={objectKeys}
             ActiveFilters={ActiveFilters}
             setNewFilters={setActiveFilters}
           />
-          <table className="table">
-            <thead>
+          {/* {SearchText.length > 0 && (
+            <span>
+              Active filter: {OpenSearch?.key} - {SearchText}
+            </span>
+          )} */}
+          <table
+            style={useDisplayBlock ? { display: "inline-block" } : undefined}
+            className={`table ${mode === "dark" ? "dark" : "light"}`}
+          >
+            <thead ref={tableHeadRef}>
               <tr>{tableHeaders}</tr>
             </thead>
-            <tbody>{data.length > 0 ? tableBody : "Nothing found"}</tbody>
+            <tbody>
+              {data.length > 0 ? (
+                tableBody
+              ) : (
+                <tr>
+                  <td align="center" colSpan={objectKeys.length}>
+                    <span>Nothing found - </span>
+                    <span
+                      className="clear-filters"
+                      onClick={() => onSearch(OriginalData)}
+                    >
+                      Clear filters
+                    </span>
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
           <TablePagination
             dataSize={data.length}
