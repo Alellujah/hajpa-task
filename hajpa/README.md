@@ -4,6 +4,7 @@
 [ ] Allow multiselect of rows and bulk actions
 [ ] Allow to search by pre-defined strings like enums for certain key
 [ ] Sort by visible results on page, not whole table
+[ ] Should be able to delete active filters
 
 #Extra
 [ ] Create mock API to simulate loading
