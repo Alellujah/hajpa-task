@@ -2,14 +2,24 @@ import React, { useState } from "react";
 import { Table, TableAction } from "../components/Table/Table";
 import { DummyData2 } from "./DummyData2";
 import { DummyDataPerson } from "./DummyData";
+import { DummyAnimalData } from "./DummyAnimalData";
 import _ from "lodash";
 import { faExclamation, faTerminal } from "@fortawesome/free-solid-svg-icons";
+import "./DummyFeature.css";
+
 interface Person {
   id: number;
   name: string;
   age: number;
 }
 
+interface IDummyAnimal {
+  id: number;
+  animal_scientific_name: string;
+  color: string;
+  bitcoin_address: string;
+  phone_number: string;
+}
 interface DummyData2I {
   id: number;
   first_name: string;
@@ -25,6 +35,9 @@ type Direction = "ASC" | "DESC";
 export const DummyFeature: React.FC<{}> = ({ ...props }) => {
   const [DummyData, setDummyData] = useState<DummyData2I[]>(DummyData2);
   const [Persons, setPersons] = useState<Person[]>(DummyDataPerson);
+  const [DummyAnimal, setDummyAnimal] = useState<IDummyAnimal[]>(
+    DummyAnimalData
+  );
 
   const [SortByDirection, setSortByDirection] = useState<{
     key: string;
@@ -62,12 +75,29 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
       ? setPersons([..._.sortBy(Persons, [key])])
       : setPersons([..._.reverse(Persons)]);
   };
-
+  const onSortAnimalData = (key: string) => {
+    const sortBy: { key: string; direction: Direction } = {
+      key,
+      direction:
+        SortByDirection?.direction === "ASC" && key === SortByDirection.key
+          ? "DESC"
+          : SortByDirection?.direction === "DESC" && key === SortByDirection.key
+          ? "ASC"
+          : "ASC",
+    };
+    setSortByDirection(sortBy);
+    sortBy.direction === "ASC"
+      ? setDummyAnimal([..._.sortBy(DummyAnimal, [key])])
+      : setDummyAnimal([..._.reverse(DummyAnimal)]);
+  };
   const onSearchDummyData = (filteredData: DummyData2I[]) => {
     setDummyData(filteredData);
   };
   const onSearchPerson = (filteredData: Person[]) => {
     setPersons(filteredData);
+  };
+  const onSearchAnimal = (filteredData: IDummyAnimal[]) => {
+    setDummyAnimal(filteredData);
   };
   const tableActionsDummyData: TableAction<DummyData2I>[] = [
     {
@@ -94,25 +124,40 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
     },
   ];
   return (
-    <>
-      <h1>1st Table</h1>
-      <Table<DummyData2I>
-        onSearch={onSearchDummyData}
-        onSort={onSortDummyData}
-        data={DummyData}
-        resultsPerPage={15}
-        tableActions={tableActionsDummyData}
-        mode={"light"}
-      />
-      <h1>2nd Table</h1>
-      <Table<Person>
-        onSearch={onSearchPerson}
-        onSort={onSortPersonData}
-        data={Persons}
-        resultsPerPage={15}
-        tableActions={tableActionsPersonData}
-        mode={"dark"}
-      />
-    </>
+    <div className="main-container">
+      <div>
+        <h1>1st Table</h1>
+        <Table<DummyData2I>
+          onSearch={onSearchDummyData}
+          onSort={onSortDummyData}
+          data={DummyData}
+          resultsPerPage={15}
+          tableActions={tableActionsDummyData}
+          mode={"light"}
+        />
+      </div>
+      <div>
+        <h1>2nd Table</h1>
+        <Table<Person>
+          onSearch={onSearchPerson}
+          onSort={onSortPersonData}
+          data={Persons}
+          resultsPerPage={15}
+          tableActions={tableActionsPersonData}
+          mode={"dark"}
+        />
+      </div>
+      <div>
+        <h1>3rd Table</h1>
+        <Table<IDummyAnimal>
+          onSearch={onSearchAnimal}
+          onSort={onSortAnimalData}
+          data={DummyAnimal}
+          resultsPerPage={15}
+          tableActions={[]}
+          mode={"light"}
+        />
+      </div>
+    </div>
   );
 };
