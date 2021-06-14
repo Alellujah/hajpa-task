@@ -19,7 +19,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   const numberOfPages = Math.ceil(dataSize / resultsPerPage);
   const elements = [];
   for (let index = 0; index < numberOfPages; index++) {
-    elements.push(
+    const btn = (
       <button
         className={actualPage === index + 1 ? "active" : undefined}
         key={`footer ${index}`}
@@ -31,6 +31,11 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
         {index + 1}
       </button>
     );
+    index === 0 && elements.push(btn);
+    index === actualPage - 1 && index !== 0 && elements.push(btn);
+    index === actualPage && elements.push(btn);
+    index === actualPage + 1 && elements.push(btn);
+    index === numberOfPages - 1 && index !== 0 && elements.push(btn);
   }
   return numberOfPages === 1 ? null : (
     <span className={"pagination"}>{elements}</span>
