@@ -18,6 +18,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({
       <input
         type="checkbox"
         name={h}
+        // fixed checked
         onChange={() => {
           setNewFilters(
             ActiveFilters.includes(h)

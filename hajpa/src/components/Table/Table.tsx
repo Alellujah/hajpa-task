@@ -38,10 +38,25 @@ export interface TableProps<T> {
    * Row actions
    */
   tableActions: TableAction<T>[];
+  /**
+   * Columns that should be filtered by all their values
+   */
   sortByEnum?: SortByEnum;
+  /**
+   * Custom CSS
+   */
   style?: CSSProperties;
+  /**
+   * Custom class
+   */
   className?: string;
+  /**
+   * Callback on sorting
+   */
   onSort: (key: string) => void;
+  /**
+   * Callback on typing to search
+   */
   onSearch: (filteredData: Array<T>) => void;
 }
 
@@ -322,13 +337,21 @@ export const Table: <T>(
             actualPage={PageNumber}
             showRecordsFrom={setShowRecordsFrom}
           />
+          <div style={{ marginTop: "1rem", marginBottom: ".5rem" }}>
+            <span
+              className="clear-filters"
+              onClick={() => onSearch(OriginalData)}
+            >
+              Clear filters
+            </span>
+          </div>
           <div className="total-results">
             Showing{" "}
             {
               data.slice(ShowRecordsFrom, ShowRecordsFrom + resultsPerPage)
                 .length
             }{" "}
-            out of {OriginalData.length}
+            out of {data.length}
           </div>
         </div>
       ) : (
