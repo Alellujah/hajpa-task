@@ -33,10 +33,9 @@ export const TableDropdownList: React.FC<TableDropdownListProps> = ({
         onChange={
           (e) => onPickValue(e.target.value) //debounce
         }
+        defaultValue={_.startCase(defaultValue)}
       >
-        <option disabled selected defaultValue={defaultValue}>
-          {_.startCase(defaultValue)}
-        </option>
+        <option disabled>{_.startCase(defaultValue)}</option>
         {options}
       </select>
     </>

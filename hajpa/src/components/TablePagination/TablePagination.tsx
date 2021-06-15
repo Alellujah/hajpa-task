@@ -18,7 +18,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
 }) => {
   const numberOfPages = Math.ceil(dataSize / resultsPerPage);
   const elements = [];
-  const span = <span>...</span>;
+  const span = <span key="...">...</span>;
   for (let index = 0; index < numberOfPages; index++) {
     const btn = (
       <button
