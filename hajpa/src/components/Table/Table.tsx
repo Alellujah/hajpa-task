@@ -35,6 +35,7 @@ export interface TableProps<T> {
   tableActions: TableAction<T>[];
   sortByEnum?: SortByEnum;
   style?: CSSProperties;
+  className?: string;
   onSort: (key: string) => void;
   onSearch: (filteredData: Array<T>) => void;
 }
@@ -54,6 +55,7 @@ export const Table: <T>(
     mode,
     sortByEnum,
     style,
+    className,
     onSort,
     onSearch,
   } = props;
@@ -130,17 +132,17 @@ export const Table: <T>(
         >
           <FontAwesomeIcon color={"#0683f9"} icon={faSort} />
         </button>
-      ) : sortByEnum?.keys.includes(key) ? (
-        <button
-          className="table-header-icon"
-          onClick={() => {
-            setOpenDropdown({ open: true, key });
-            console.log("click open", OpenDropdown);
-          }}
-        >
-          <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
-        </button>
-      ) : null
+      ) : // sortByEnum?.keys.includes(key) ? (
+      //   <button
+      //     className="table-header-icon"
+      //     onClick={() => {
+      //       setOpenDropdown({ open: true, key });
+      //     }}
+      //   >
+      //     <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
+      //   </button>
+      // ) :
+      null
     ) : null;
   };
 
@@ -165,7 +167,29 @@ export const Table: <T>(
           (k, i) =>
             !ActiveFilters.includes(k) && (
               <th key={i}>
-                {_.startCase(String(k))} {sortBy(k, typeOfAttribute(i))}
+                {sortByEnum?.keys.includes(k) ? (
+                  <TableDropdownList
+                    key={k}
+                    defaultValue={k}
+                    list={_.uniqBy(OriginalData, k).map((v: any) => v[k])}
+                    onBlurOut={() => {
+                      setOpenDropdown({
+                        key: "",
+                        open: false,
+                      });
+                      setSearchText("");
+                    }}
+                    onPickValue={(string) => {
+                      setSearchText(string);
+                      onSearch(filterData(OriginalData, k, string, true));
+                      setPageNumber(1);
+                      setShowRecordsFrom(0);
+                    }}
+                  />
+                ) : (
+                  _.startCase(String(k))
+                )}{" "}
+                {sortBy(k, typeOfAttribute(i))}
                 {OpenSearch && OpenSearch.key === k && (
                   <TableSearch
                     key={k}
@@ -190,6 +214,7 @@ export const Table: <T>(
                 {OpenDropdown && OpenDropdown.key === k && (
                   <TableDropdownList
                     key={k}
+                    defaultValue={k}
                     list={_.uniqBy(OriginalData, k).map(
                       (v: any) => v[OpenDropdown.key]
                     )}
@@ -261,7 +286,11 @@ export const Table: <T>(
   return (
     <>
       {OriginalData.length > 0 ? (
-        <div className="container" style={style} ref={containerRef}>
+        <div
+          className={`container ${className}`}
+          style={style}
+          ref={containerRef}
+        >
           <TableFilter
             ObjectKeys={objectKeys}
             ActiveFilters={ActiveFilters}

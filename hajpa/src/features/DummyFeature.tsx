@@ -126,7 +126,7 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
   return (
     <div className="main-container">
       <div>
-        <h1>1st Table</h1>
+        <h1>Table w/ light mode and actions</h1>
         <Table<DummyData2I>
           onSearch={onSearchDummyData}
           onSort={onSortDummyData}
@@ -138,25 +138,14 @@ export const DummyFeature: React.FC<{}> = ({ ...props }) => {
         />
       </div>
       <div>
-        <h1>2nd Table</h1>
-        <Table<Person>
-          onSearch={onSearchPerson}
-          onSort={onSortPersonData}
-          data={Persons}
-          resultsPerPage={15}
-          tableActions={tableActionsPersonData}
-          mode={"dark"}
-        />
-      </div>
-      <div>
-        <h1>3rd Table</h1>
+        <h1>Table w/ dark mode and no actions</h1>
         <Table<IDummyAnimal>
           onSearch={onSearchAnimal}
           onSort={onSortAnimalData}
           data={DummyAnimal}
           resultsPerPage={15}
           tableActions={[]}
-          mode={"light"}
+          mode={"dark"}
           sortByEnum={{ keys: ["color"] }}
         />
       </div>

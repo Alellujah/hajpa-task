@@ -14,11 +14,10 @@ export const TableFilter: React.FC<TableFilterProps> = ({
   setNewFilters,
 }) => {
   const filters = ObjectKeys.map((h, i) => (
-    <>
+    <React.Fragment key={`${h} ${i}  ${new Date().getTime()}`}>
       <input
         type="checkbox"
         name={h}
-        key={h + i}
         // fixed checked
         onChange={() => {
           setNewFilters(
@@ -29,7 +28,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({
         }}
       />
       <label htmlFor={h}>{_.startCase(h)}</label>
-    </>
+    </React.Fragment>
   ));
   return (
     <div className="table-filter">
