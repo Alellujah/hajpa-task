@@ -5,11 +5,7 @@ import { TableFilter } from "../TableFilter/TableFilter";
 import { TablePagination } from "../TablePagination/TablePagination";
 import { TableSearch } from "../TableSearch/TableSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSort,
-  faSearch,
-  faCaretDown,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSort, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./Table.css";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableDropdownList } from "../TableDropdownList/TableDropdownList";
@@ -30,8 +26,17 @@ export interface TableProps<T> {
    * Data array passed to the table
    */
   data: Array<T>;
+  /**
+   * Dark or light mode
+   */
   mode?: Mode;
+  /**
+   * Max results per page
+   */
   resultsPerPage: number;
+  /**
+   * Row actions
+   */
   tableActions: TableAction<T>[];
   sortByEnum?: SortByEnum;
   style?: CSSProperties;
@@ -40,9 +45,6 @@ export interface TableProps<T> {
   onSearch: (filteredData: Array<T>) => void;
 }
 
-/**
- * Primary UI component for user interaction
- */
 type SortByType = "string" | "number" | null;
 
 export const Table: <T>(
@@ -132,17 +134,7 @@ export const Table: <T>(
         >
           <FontAwesomeIcon color={"#0683f9"} icon={faSort} />
         </button>
-      ) : // sortByEnum?.keys.includes(key) ? (
-      //   <button
-      //     className="table-header-icon"
-      //     onClick={() => {
-      //       setOpenDropdown({ open: true, key });
-      //     }}
-      //   >
-      //     <FontAwesomeIcon color={"#0683f9"} icon={faCaretDown} />
-      //   </button>
-      // ) :
-      null
+      ) : null
     ) : null;
   };
 
@@ -294,13 +286,10 @@ export const Table: <T>(
           <TableFilter
             ObjectKeys={objectKeys}
             ActiveFilters={ActiveFilters}
-            setNewFilters={setActiveFilters}
+            setNewFilters={(newFilters) => {
+              setActiveFilters(newFilters);
+            }}
           />
-          {/* {SearchText.length > 0 && (
-            <span>
-              Active filter: {OpenSearch?.key} - {SearchText}
-            </span>
-          )} */}
           <table
             style={useDisplayBlock ? { display: "inline-block" } : undefined}
             className={`table ${mode === "dark" ? "dark" : "light"}`}

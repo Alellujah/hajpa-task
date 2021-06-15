@@ -12,12 +12,6 @@
   flex-direction: column;
   z-index: 0;
 }
-.table th {
-  /* Creating problems w search box*/
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; */
-}
 .table.light td,
 .table.light th {
   white-space: nowrap;
@@ -68,15 +62,12 @@ table.light td.actions {
 }
 .table {
   border-radius: 0.5rem;
-  /* display: inline-block; */
   border-collapse: separate;
   margin: 1rem;
   width: 100%;
-  /* max-width: 1080px; */
   overflow-x: auto;
   border: 1px solid #eee;
   max-height: 80vh;
-  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
   overflow-y: auto;
 }
 tfoot td {
@@ -89,13 +80,6 @@ tfoot td {
   text-align: left;
 }
 .table.light thead tr {
-  /* background: linear-gradient(270deg, #1169ff, #7925ca);
-  background-size: 400% 400%;
-
-  -webkit-animation: AnimationName 0s ease infinite;
-  -moz-animation: AnimationName 0s ease infinite;
-  animation: AnimationName 0s ease infinite; */
-  /* color: #ffffff; */
   background-color: #ffffff;
   color: #333333;
   text-align: left;
@@ -103,9 +87,6 @@ tfoot td {
 .table th,
 .table td {
   padding: 1rem;
-}
-.table tbody tr {
-  /* border-bottom: 1px solid #dddddd; */
 }
 
 .table.light tbody tr:nth-of-type(even) {

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useState } from "react";
+import React from "react";
 import "./TableFilter.css";
 
 export interface TableFilterProps {
@@ -18,7 +18,6 @@ export const TableFilter: React.FC<TableFilterProps> = ({
       <input
         type="checkbox"
         name={h}
-        // fixed checked
         onChange={() => {
           setNewFilters(
             ActiveFilters.includes(h)
