@@ -22,8 +22,6 @@ export const TableDropdownList: React.FC<TableDropdownListProps> = ({
   return (
     <>
       <select
-        name="cars"
-        id="cars"
         key={"select"}
         autoFocus={true}
         placeholder="Select"

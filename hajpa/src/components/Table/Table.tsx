@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { normalizeString } from "../../helper/helper";
 import { TableFilter } from "../TableFilter/TableFilter";
 import { TablePagination } from "../TablePagination/TablePagination";
@@ -34,6 +34,7 @@ export interface TableProps<T> {
   resultsPerPage: number;
   tableActions: TableAction<T>[];
   sortByEnum?: SortByEnum;
+  style?: CSSProperties;
   onSort: (key: string) => void;
   onSearch: (filteredData: Array<T>) => void;
 }
@@ -52,6 +53,7 @@ export const Table: <T>(
     resultsPerPage,
     mode,
     sortByEnum,
+    style,
     onSort,
     onSearch,
   } = props;
@@ -192,14 +194,13 @@ export const Table: <T>(
                       (v: any) => v[OpenDropdown.key]
                     )}
                     onBlurOut={() => {
-                      // setOpenDropdown({
-                      //   key: "",
-                      //   open: false,
-                      // });
-                      // setSearchText("");
+                      setOpenDropdown({
+                        key: "",
+                        open: false,
+                      });
+                      setSearchText("");
                     }}
                     onPickValue={(string) => {
-                      console.log("value picked", string);
                       setSearchText(string);
                       onSearch(
                         filterData(OriginalData, OpenDropdown.key, string, true)
@@ -260,7 +261,7 @@ export const Table: <T>(
   return (
     <>
       {OriginalData.length > 0 ? (
-        <div className="container" ref={containerRef}>
+        <div className="container" style={style} ref={containerRef}>
           <TableFilter
             ObjectKeys={objectKeys}
             ActiveFilters={ActiveFilters}

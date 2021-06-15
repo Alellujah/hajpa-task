@@ -18,6 +18,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
 }) => {
   const numberOfPages = Math.ceil(dataSize / resultsPerPage);
   const elements = [];
+  const span = <span>...</span>;
   for (let index = 0; index < numberOfPages; index++) {
     const btn = (
       <button
@@ -31,12 +32,48 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
         {index + 1}
       </button>
     );
-    index === 0 && elements.push(btn);
-    index === actualPage - 1 && index !== 0 && elements.push(btn);
-    index === actualPage && elements.push(btn);
-    index === actualPage + 1 && elements.push(btn);
-    index === numberOfPages - 1 && index !== 0 && elements.push(btn);
+    if (index === 0) {
+      //first page
+
+      elements.push(btn);
+    } else if (index === numberOfPages - 1) {
+      //last page
+      elements.push(btn);
+    } else if (index === actualPage - 1) {
+      //actual page selected
+      elements.push(btn);
+    } else if (
+      index === actualPage - 2 &&
+      index !== 0 &&
+      index !== numberOfPages - 1
+    ) {
+      //previous page
+      index === 1 ? elements.push(btn) : elements.push(span, btn);
+    } else if (
+      index === actualPage &&
+      index !== 0 &&
+      index !== numberOfPages - 1
+    ) {
+      //next page
+      index === numberOfPages - 3
+        ? elements.push(btn)
+        : elements.push(btn, span);
+    }
   }
+  //   else if(index === actualPage + 2 )
+  //   index === actualPage - 1 && index !== 0 && elements.push(btn);
+  //   index === actualPage && elements.push(btn);
+  //   // index === actualPage + 1 && index !== numberOfPages && elements.push(btn);
+  //   index === numberOfPages - 1 &&
+  //     actualPage !== numberOfPages - 1 &&
+  //     elements.push(btn);
+  // }
+  //initial page - 0
+  //actual page - 1 previous
+  //actual page
+  //actual page + 1 next
+  //last page - numberOfPages
+
   return numberOfPages === 1 ? null : (
     <span className={"pagination"}>{elements}</span>
   );
