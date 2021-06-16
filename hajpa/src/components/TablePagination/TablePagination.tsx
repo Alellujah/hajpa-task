@@ -18,7 +18,6 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
 }) => {
   const numberOfPages = Math.ceil(dataSize / resultsPerPage);
   const elements = [];
-  const span = <span key="...">...</span>;
   for (let index = 0; index < numberOfPages; index++) {
     const btn = (
       <button
@@ -47,7 +46,9 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       index !== numberOfPages - 1
     ) {
       //previous page
-      index === 1 ? elements.push(btn) : elements.push(span, btn);
+      index === 1
+        ? elements.push(btn)
+        : elements.push(<span key={index}>...</span>, btn);
     } else if (
       index === actualPage &&
       index !== 0 &&
@@ -56,7 +57,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
       //next page
       index === numberOfPages - 3
         ? elements.push(btn)
-        : elements.push(btn, span);
+        : elements.push(btn, <span key={index}>...</span>);
     }
   }
 
