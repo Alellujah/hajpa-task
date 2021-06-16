@@ -20,6 +20,7 @@
 }
 .table.dark {
   border-collapse: collapse;
+  border: 0;
 }
 .table.dark td,
 .table.dark th {
