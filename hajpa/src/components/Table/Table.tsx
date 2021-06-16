@@ -337,14 +337,16 @@ export const Table: <T>(
             actualPage={PageNumber}
             showRecordsFrom={setShowRecordsFrom}
           />
-          <div style={{ marginTop: "1rem", marginBottom: ".5rem" }}>
-            <span
-              className="clear-filters"
-              onClick={() => onSearch(OriginalData)}
-            >
-              Clear filters
-            </span>
-          </div>
+          {data.length !== OriginalData.length && (
+            <div style={{ marginTop: "1rem", marginBottom: ".5rem" }}>
+              <span
+                className="clear-filters"
+                onClick={() => onSearch(OriginalData)}
+              >
+                Clear filters
+              </span>
+            </div>
+          )}
           <div className="total-results">
             Showing{" "}
             {

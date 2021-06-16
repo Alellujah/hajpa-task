@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import "./TableFilter.css";
 
 export interface TableFilterProps {
@@ -14,11 +14,10 @@ export const TableFilter: React.FC<TableFilterProps> = ({
   setNewFilters,
 }) => {
   const filters = ObjectKeys.map((h, i) => (
-    <React.Fragment key={`${h} ${i}  ${new Date().getTime()}`}>
+    <React.Fragment key={`${h} ${i} `}>
       <input
         type="checkbox"
         name={h}
-        // fixed checked
         onChange={() => {
           setNewFilters(
             ActiveFilters.includes(h)
