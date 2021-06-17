@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "e9e6ea9ac186ee0aa816";
+/******/ 	var hotCurrentHash = "b6ebaac2c3a35c4da04c";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -23124,7 +23124,7 @@ function installPiralDebug(options) {
             context,
         },
         build: {
-            date: "2021-06-17T00:23:03.327Z",
+            date: "2021-06-17T00:40:42.286Z",
             cli: "0.13.2",
             compat: "0.13",
         },
