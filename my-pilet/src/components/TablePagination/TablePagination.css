@@ -1,0 +1,23 @@
+.pagination button {
+  background: transparent;
+  border: 1px solid #0683f9;
+  border-radius: 0.2rem;
+  margin: 0 0.4rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  color: #0683f9;
+}
+.pagination button:hover {
+  background: #0683f9;
+  color: white;
+  transition: all ease 0.2s;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination button.active {
+  background: #0683f9;
+  color: white;
+}

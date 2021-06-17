@@ -1,0 +1,12 @@
+/* .main-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.main-container div {
+  margin: auto;
+  max-width: 1080px;
+} */
+.main-container {
+  padding: 2rem;
+}

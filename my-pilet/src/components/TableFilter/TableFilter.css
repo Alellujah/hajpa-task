@@ -1,0 +1,17 @@
+.table-filter {
+  border-radius: 0.5rem;
+  border-color: #eee;
+  padding: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+.table-filter input {
+  cursor: pointer;
+}
+.table-filter label {
+  margin: 1rem 1.5rem 1rem 0.3rem;
+}
+.table-filter h5 {
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
